@@ -1,0 +1,152 @@
+CREATE DATABASE IF NOT EXISTS monitoring_desa;
+USE monitoring_desa;
+
+CREATE TABLE user (
+    id_user INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    nama_lengkap VARCHAR(100),
+    role VARCHAR(20)
+);
+
+INSERT INTO user(username,password,nama_lengkap,role)
+VALUES
+(
+'admin',
+'admin123',
+'Administrator Desa',
+'admin'
+);
+
+CREATE TABLE proyek (
+    id_proyek INT AUTO_INCREMENT PRIMARY KEY,
+    nama_proyek VARCHAR(200),
+    lokasi VARCHAR(200),
+    deskripsi TEXT,
+    tanggal_mulai DATE,
+    tanggal_selesai DATE,
+    status_proyek ENUM(
+        'Perencanaan',
+        'Berjalan',
+        'Selesai'
+    ) DEFAULT 'Perencanaan'
+);
+
+INSERT INTO proyek(
+nama_proyek,
+lokasi,
+deskripsi,
+tanggal_mulai,
+tanggal_selesai,
+status_proyek
+)
+VALUES
+(
+'Pembangunan Jalan Desa',
+'Dusun Mekar Jaya',
+'Pembangunan jalan desa utama',
+'2026-01-10',
+'2026-06-30',
+'Berjalan'
+),
+(
+'Renovasi Balai Desa',
+'Desa Sukamaju',
+'Renovasi balai desa',
+'2026-02-01',
+'2026-05-01',
+'Selesai'
+);
+
+CREATE TABLE progress_fisik (
+    id_progress INT AUTO_INCREMENT PRIMARY KEY,
+    id_proyek INT,
+    persentase INT,
+    tanggal_update DATE,
+    keterangan TEXT,
+    FOREIGN KEY(id_proyek)
+    REFERENCES proyek(id_proyek)
+    ON DELETE CASCADE
+);
+
+INSERT INTO progress_fisik(
+id_proyek,
+persentase,
+tanggal_update,
+keterangan
+)
+VALUES
+(
+1,
+75,
+'2026-06-01',
+'Proses pengaspalan'
+),
+(
+2,
+100,
+'2026-05-01',
+'Proyek selesai'
+);
+
+CREATE TABLE anggaran (
+    id_anggaran INT AUTO_INCREMENT PRIMARY KEY,
+    id_proyek INT,
+    alokasi BIGINT,
+    realisasi BIGINT,
+    FOREIGN KEY(id_proyek)
+    REFERENCES proyek(id_proyek)
+    ON DELETE CASCADE
+);
+
+INSERT INTO anggaran(
+id_proyek,
+alokasi,
+realisasi
+)
+VALUES
+(
+1,
+120000000,
+90000000
+),
+(
+2,
+80000000,
+80000000
+);
+
+CREATE TABLE dokumentasi (
+    id_dokumentasi INT AUTO_INCREMENT PRIMARY KEY,
+    id_proyek INT,
+    foto VARCHAR(255),
+    tanggal_upload DATE,
+    keterangan TEXT,
+    FOREIGN KEY(id_proyek)
+    REFERENCES proyek(id_proyek)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE pengumuman (
+    id_pengumuman INT AUTO_INCREMENT PRIMARY KEY,
+    judul VARCHAR(200),
+    isi TEXT,
+    tanggal DATE
+);
+
+CREATE TABLE profil_desa (
+    id_profil INT AUTO_INCREMENT PRIMARY KEY,
+    nama_desa VARCHAR(150),
+    alamat TEXT,
+    visi TEXT,
+    misi TEXT,
+    sejarah TEXT,
+    foto VARCHAR(255)
+);
+
+CREATE TABLE kontak_desa (
+    id_kontak INT AUTO_INCREMENT PRIMARY KEY,
+    telepon VARCHAR(20),
+    email VARCHAR(100),
+    website VARCHAR(100)
+);
